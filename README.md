@@ -1,5 +1,10 @@
 # Suad AI — Local-First AI Voice Agent Platform
 
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![Python 3.11+](https://img.shields.io/badge/python-3.11%2B-blue.svg)](https://www.python.org/)
+[![Tests](https://img.shields.io/badge/tests-39%20passing-brightgreen.svg)](#tests)
+[![Code style: ruff](https://img.shields.io/badge/style-ruff-261230.svg)](#make-targets)
+
 A self-hosted **AI employee** for businesses. It can chat, listen, speak,
 answer phone calls, use business tools, read a knowledge base, follow
 permissions, and run predefined task playbooks.
@@ -8,12 +13,29 @@ permissions, and run predefined task playbooks.
 
 ```
 React + Vite admin UI  ──>  FastAPI backend  ──>  pluggable provider adapters
-                                                   ├── LLM   (Ollama / OpenAI / OpenRouter / Claude / vLLM …)
-                                                   ├── STT   (faster-whisper …)
-                                                   ├── TTS   (Piper / XTTS …)
-                                                   ├── Telephony (LiveKit·SIP / Twilio …)
-                                                   └── Memory/RAG (Qdrant, optional)
+                                                   ├── LLM      (Ollama / OpenAI / OpenRouter / Claude / vLLM …)
+                                                   ├── STT      (faster-whisper …)
+                                                   ├── TTS      (Piper / XTTS …)
+                                                   ├── Telephony(LiveKit·SIP / Twilio …)
+                                                   └── Memory   (Qdrant, optional)
 ```
+
+---
+
+## Table of contents
+
+- [60-second start](#60-second-start-zero-cloud-accounts-no-postgres)
+- [Full stack with Docker](#full-stack-with-docker-postgres--redis--qdrant--api--ui)
+- [One-command local stack](#one-command-local-stack-startshstopsh)
+- [What's inside](#whats-inside)
+- [Make targets](#make-targets)
+- [Documentation](#documentation)
+- [Project layout](#project-layout)
+- [Tests](#tests)
+- [Security model](#security-model-short-version)
+- [Known limitations](#known-limitations)
+- [Contributing](#contributing)
+- [License](#license)
 
 ---
 
@@ -53,32 +75,30 @@ make docker-up      # http://localhost:5173  (API on :8000)
 make docker-down
 ```
 
----
+> The bundled Postgres/Redis credentials in `docker-compose.yml` are
+> **dev-only defaults**. Change them before exposing anything beyond localhost.
 
-## To Run all at once in localhost = run this script on Terminal
+## One-command local stack (`start.sh` / `stop.sh`)
 
-./start.sh
+```bash
+./start.sh          # Ollama + backend (:8000) + frontend (:5173), idempotent
+./stop.sh           # stops backend + UI, leaves Ollama running
+./stop.sh --all     # stops everything
+```
 
-& 
+Logs are written to `logs/`. Prefer manual control? Run each piece yourself:
 
-## Stop it script ready for it as well.
-
-./stop.sh          # stops backend + UI, leaves Ollama running
-
-& 
-
-## Run it Manually
-
+```bash
 # Terminal 1
 ollama serve
 
 # Terminal 2
-cd ~/Desktop/suad_ai && source .venv/bin/activate
-cd backend && PYTHONPATH=. python -m uvicorn app.main:app --port 8000
+source .venv/bin/activate
+make dev                                    # or: cd backend && python -m uvicorn app.main:app --port 8000
 
 # Terminal 3
-cd ~/Desktop/suad_ai/frontend && npm run dev
-
+cd frontend && npm run dev
+```
 
 ---
 
@@ -98,23 +118,26 @@ cd ~/Desktop/suad_ai/frontend && npm run dev
 ## Make targets
 
 ```
-make install       core deps      make test        run tests
-make install-full  all providers  make lint        ruff lint
-make dev           run API        make format      ruff format/fix
-make frontend      run admin UI   make migrate     alembic upgrade head
-make docker-up     full stack     make seed        seed roles + demo agent
+make install        core deps        make test         run tests
+make install-full   all providers    make lint         ruff lint
+make dev            run API          make format       ruff format/fix
+make frontend       run admin UI     make migrate      alembic upgrade head
+make docker-up      full stack       make makemigration m="..."   new migration
+make docker-down    stop stack       make seed         seed roles + demo agent
 ```
 
 ## Documentation
 
-- [docs/quickstart.md](docs/quickstart.md) — run fully local in minutes
-- [docs/configuration.md](docs/configuration.md) — every `.env` setting
-- [docs/providers.md](docs/providers.md) — swap providers, add a new adapter
-- [docs/local-llm.md](docs/local-llm.md) — Ollama with Qwen/Llama, vLLM, LM Studio
-- [docs/telephony.md](docs/telephony.md) — LiveKit/SIP vs Twilio
-- [docs/tasks.md](docs/tasks.md) — write task recipes & business tools
-- [docs/permissions.md](docs/permissions.md) — how the gate protects tools
-- [docs/deployment.md](docs/deployment.md) — Docker, Postgres, migrations, prod notes
+| Guide | What it covers |
+|---|---|
+| [docs/quickstart.md](docs/quickstart.md) | Run fully local in minutes, troubleshooting table |
+| [docs/configuration.md](docs/configuration.md) | Every `.env` setting, reference table |
+| [docs/providers.md](docs/providers.md) | Swap providers, add a new adapter (3-step recipe) |
+| [docs/local-llm.md](docs/local-llm.md) | Ollama with Qwen/Llama, vLLM, LM Studio |
+| [docs/telephony.md](docs/telephony.md) | LiveKit/SIP vs Twilio, webhook simulation |
+| [docs/tasks.md](docs/tasks.md) | Write task recipes & business tools |
+| [docs/permissions.md](docs/permissions.md) | How the permission gate protects tools |
+| [docs/deployment.md](docs/deployment.md) | Docker, Postgres, migrations, production checklist |
 
 ## Project layout
 
@@ -131,6 +154,7 @@ backend/app/
   services/    agent + setup orchestration
 frontend/src/  React + Vite + TS admin (pages/, components/, api.ts)
 tests/         config, provider selection, permissions, tools, API
+docs/          quickstart, configuration, providers, local-llm, telephony, tasks, permissions, deployment
 ```
 
 ## Tests
@@ -153,6 +177,58 @@ suite is fully green offline. See [docs/quickstart.md](docs/quickstart.md).
 4. Every decision is written to an immutable `audit_logs` row.
 5. The LLM emits *tool requests*, never SQL. Handlers use parameterized,
    typed accessors only (`app/tools/db_safe.py`).
+
+Read [docs/permissions.md](docs/permissions.md) for the full decision flow and
+[docs/deployment.md](docs/deployment.md) for the production hardening checklist.
+
+## Known limitations
+
+Honest list of what is **not** production-ready yet — contributions welcome:
+
+- **Auth is a dev shortcut.** Identity comes from optional `X-API-Key` /
+  `X-Role` headers and is *not validated against a secret*. Replace with
+  OIDC/JWT before any internet-facing deployment (see the production
+  checklist in [docs/deployment.md](docs/deployment.md)).
+- **No token streaming yet.** Chat replies are returned as a single JSON
+  payload (including over WebSocket); SSE/streaming is on the roadmap.
+- **Tool demos use in-memory data.** `app/tools/db_safe.py` ships demo
+  orders/tickets/appointments — swap the handlers for real CRM/OMS calls.
+- **Recipe `tools` lists are advisory.** Tool visibility is governed by each
+  agent's `allowed_tools`; recipes contribute prompt steps.
+- **Telephony webhooks are unsigned.** Twilio signature / LiveKit secret
+  verification is not implemented yet.
+
+Found something else? Please [open an issue](https://github.com/7AZZANI/suad_ai/issues).
+
+## Contributing
+
+Contributions are welcome — bug reports, docs, adapters, tests.
+
+1. Fork and create a feature branch: `git checkout -b feat/my-change`
+2. Install dev deps: `make install` (add `make install-full` for provider SDKs)
+3. Make your change with tests where it makes sense
+4. Run the gates: `make test && make lint`
+5. Open a PR with a short description of *why* the change is needed
+
+Guidelines:
+
+- Keep the local-first principle: nothing may require a cloud account to boot.
+- New providers go behind a factory + adapter — never hardcode a vendor in
+  business logic (see [docs/providers.md](docs/providers.md)).
+- Tools must declare a `scope` and `risk_level`; business data access goes
+  through typed handlers, never LLM-generated SQL.
+- Never commit `.env`, keys, or tokens — `.gitignore` blocks them, but review
+  your diff before pushing anyway.
+
+Please report security issues privately to the maintainer rather than a public
+issue.
+
+## License
+
+MIT — see [LICENSE](LICENSE). You are free to use, modify, and distribute this
+software, with the usual MIT notice retained.
+
+---
 
 Built to be understood by a new developer in under 30 minutes — start with
 `backend/app/main.py` and follow the imports.

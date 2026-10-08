@@ -2,6 +2,8 @@
 name = "suad-ai"
 version = "0.1.0"
 description = "Local-first, cloud-optional AI voice-agent platform for businesses"
+license = { text = "MIT" }
+readme = "README.md"
 requires-python = ">=3.11"
 
 [tool.ruff]

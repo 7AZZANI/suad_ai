@@ -1,18 +1,48 @@
+# --- Python ---
 __pycache__/
 *.py[cod]
 *.egg-info/
 .venv/
 venv/
+
+# --- Secrets / local config (never commit) ---
 .env
-.env.local
+.env.*
+!.env.example
+!frontend/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+
+# --- Databases / local data ---
 *.sqlite3
 *.db
+data/
+
+# --- Logs ---
+.logs/
+logs/
+*.log
+
+# --- Tests / linters ---
 .pytest_cache/
 .ruff_cache/
 .mypy_cache/
+.coverage
+htmlcov/
+
+# --- Node / Frontend ---
 node_modules/
 frontend/dist/
+frontend/*.tsbuildinfo
+frontend/vite.config.d.ts
+*.tsbuildinfo
+
+# --- Editors / OS / tools ---
+.idea/
+.vscode/
+*.swp
 .DS_Store
-data/
-logs/
-*.log
+.opencode/

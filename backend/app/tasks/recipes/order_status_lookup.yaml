@@ -1,0 +1,13 @@
+title: Order Status Lookup
+description: Tell a customer the current status of their order.
+tools:
+  - order_status_lookup
+  - human_handoff
+guidance: >
+  Ask for the order ID, look it up, and explain status and ETA clearly. Never
+  guess — if the order is not found, say so and offer a handoff.
+steps:
+  - Ask for the order ID.
+  - Call order_status_lookup with the ID.
+  - Report status, carrier and ETA in plain language.
+  - If not found, apologize and offer human_handoff.

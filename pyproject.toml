@@ -1,0 +1,31 @@
+[project]
+name = "suad-ai"
+version = "0.1.0"
+description = "Local-first, cloud-optional AI voice-agent platform for businesses"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["backend"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP", "W"]
+ignore = ["B008", "E501"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["app"]
+
+[tool.mypy]
+python_version = "3.11"
+ignore_missing_imports = true
+disallow_untyped_defs = false
+warn_unused_ignores = false
+plugins = []
+mypy_path = "backend"
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+pythonpath = ["backend"]
+filterwarnings = ["ignore::DeprecationWarning"]

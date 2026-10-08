@@ -1,0 +1,17 @@
+title: Customer Support Ticket
+description: >
+  Collect the customer's problem, attempt a knowledge-base answer first, and
+  open a support ticket only if the issue is unresolved.
+tools:
+  - knowledge_search
+  - create_support_ticket
+  - human_handoff
+guidance: >
+  Be empathetic and concise. Always search the knowledge base before creating
+  a ticket. Confirm the summary with the customer before opening the ticket.
+steps:
+  - Greet and ask for a short description of the problem.
+  - Use knowledge_search to look for an existing solution.
+  - If solved, confirm resolution and close politely.
+  - If unresolved, summarize and call create_support_ticket (needs confirm).
+  - Offer human_handoff if the customer is frustrated or asks for a person.

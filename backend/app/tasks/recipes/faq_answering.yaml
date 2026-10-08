@@ -1,0 +1,12 @@
+title: FAQ Answering
+description: Answer common questions using only the knowledge base.
+tools:
+  - knowledge_search
+guidance: >
+  Answer strictly from retrieved knowledge. If the answer is not in the
+  knowledge base, say you don't know rather than inventing one.
+steps:
+  - Understand the question.
+  - Call knowledge_search.
+  - Answer concisely citing the retrieved content.
+  - If nothing relevant is found, say so honestly.

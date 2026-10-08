@@ -1,0 +1,30 @@
+# Minimal set required to BOOT the API and run the test suite.
+# The heavy provider SDKs in requirements.txt (faster-whisper, livekit,
+# llama-index, anthropic, ...) are imported lazily, so the platform starts
+# and the admin UI works with only these packages installed.
+fastapi>=0.115.0
+uvicorn[standard]>=0.30.0
+pydantic>=2.8.0
+pydantic-settings>=2.4.0
+python-dotenv>=1.0.1
+python-multipart>=0.0.9
+
+sqlalchemy[asyncio]>=2.0.32
+aiosqlite>=0.20.0
+asyncpg>=0.29.0
+alembic>=1.13.2
+
+# Lightweight LLM SDKs — needed for the default (Ollama) and Claude paths.
+# These are pure-Python (httpx-based); the genuinely heavy provider deps
+# (faster-whisper, livekit, qdrant-client, llama-index) stay optional.
+openai>=1.40.0
+anthropic>=0.34.0
+
+httpx>=0.27.0
+tenacity>=8.5.0
+pyyaml>=6.0.2
+orjson>=3.10.7
+
+pytest>=8.3.2
+pytest-asyncio>=0.23.8
+ruff>=0.5.7

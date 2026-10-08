@@ -1,0 +1,15 @@
+title: Appointment Booking
+description: Help a customer schedule an appointment for a service.
+tools:
+  - knowledge_search
+  - book_appointment
+  - human_handoff
+guidance: >
+  Gather the service, preferred date/time and customer name. Booking is an
+  approval-tier action — explain that the request will be confirmed shortly.
+steps:
+  - Ask which service the customer needs.
+  - Collect preferred date and time (ISO format).
+  - Confirm details back to the customer.
+  - Call book_appointment (approval required — a human approves it).
+  - Tell the customer the request is pending confirmation.

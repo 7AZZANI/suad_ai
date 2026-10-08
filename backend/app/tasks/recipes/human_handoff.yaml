@@ -1,0 +1,12 @@
+title: Human Handoff
+description: Cleanly escalate a conversation to a human agent.
+tools:
+  - human_handoff
+guidance: >
+  Use when the customer explicitly asks for a person, is upset, or the request
+  is outside the agent's allowed tools. Capture a concise reason.
+steps:
+  - Acknowledge the request to speak with a human.
+  - Summarize the conversation so far.
+  - Call human_handoff with a clear reason.
+  - Reassure the customer that a person will follow up.

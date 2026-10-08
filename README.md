@@ -122,9 +122,28 @@ make install        core deps        make test         run tests
 make install-full   all providers    make lint         ruff lint
 make dev            run API          make format       ruff format/fix
 make frontend       run admin UI     make migrate      alembic upgrade head
-make docker-up      full stack       make makemigration m="..."   new migration
-make docker-down    stop stack       make seed         seed roles + demo agent
+make docker-up       full stack       make makemigration m="..."   new migration
+make docker-down     stop stack       make seed         seed roles + demo agent
+make release v=1.2.3 release (bump + tag + push)
 ```
+
+## Versioning & releases
+
+The repo follows [Semantic Versioning](https://semver.org/) — `MAJOR.MINOR.PATCH`.
+Backend and frontend are versioned as one unit (tag `vX.Y.Z`).
+
+- **Fixes** → bump `PATCH` (0.1.0 → 0.1.1)
+- **Features** → bump `MINOR`  (0.1.0 → 0.2.0)
+- **Breaking changes** → bump `MAJOR` (0.1.0 → 1.0.0)
+
+Cut a release in one command:
+
+```bash
+# 1. Update CHANGELOG.md first (move Unreleased -> new section)
+make release v=0.1.1      # bumps version, commits, tags v0.1.1, pushes
+```
+
+Full policy and the manual/`--no-push` flow: [docs/releasing.md](docs/releasing.md).
 
 ## Documentation
 
@@ -138,6 +157,7 @@ make docker-down    stop stack       make seed         seed roles + demo agent
 | [docs/tasks.md](docs/tasks.md) | Write task recipes & business tools |
 | [docs/permissions.md](docs/permissions.md) | How the permission gate protects tools |
 | [docs/deployment.md](docs/deployment.md) | Docker, Postgres, migrations, production checklist |
+| [docs/releasing.md](docs/releasing.md) | Versioning & release workflow (`make release v=…`) |
 
 ## Project layout
 

@@ -57,3 +57,7 @@ docker-down: ## Stop the Docker Compose stack
 .PHONY: seed
 seed: ## Insert demo agent + permission roles
 	cd $(BACKEND) && $(PY) -m app.scripts.seed
+
+.PHONY: release
+release: ## Cut a new release: make release v=0.1.1 (bumps, tags, pushes)
+	./scripts/bump_version.sh $(v)
